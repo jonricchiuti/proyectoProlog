@@ -1,13 +1,15 @@
-cargarListaPalabra(Alfabeto,Archivo) :-
+cargarListaPalabra(Alfabeto,Archivo,Tablero) :-
 	open(Archivo,read,Str),
 	read(Str,List),
 	close(Str),
 	verificar(List,Alfabeto),
 	generarHechos(Alfabeto),
 	palabrasAceptadas(List,Aceptadas),
-	hola(Tablero,5,Aceptadas).
+	hola(Tablero,5,Aceptadas),
+	epa(Tablero,Aceptadas),
+	mostrarSopa(Tablero).
 
-palabrasAceptadas([],_).
+palabrasAceptadas([],[]).
 
 palabrasAceptadas([H|T],[H_|T_]) :-
 	atom_chars(H,H_),
@@ -44,9 +46,8 @@ crearTablero([H|T],X) :-
 
 hola(Lista,X,Aceptadas) :-
 	length(Lista,X),
-	crearTablero(Lista,X),
-	epa(Lista,Aceptadas),
-	mostrarSopa(Lista).
+	crearTablero(Lista,X).
+
 
 
 holis([H|T],Palabra) :-
