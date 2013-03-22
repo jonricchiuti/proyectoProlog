@@ -1,6 +1,14 @@
 :- use_module(library(clpfd)).
 
-cargarListaPalabra(Alfabeto,Archivo) :-
+cargarListaPalabra(_) :-
+ 	write('Tamano? '),
+	read(Tam),
+	write('\nAlbafeto? '),
+	read(Albafeto),
+	write('\nLista de palabras aceptadas? '),
+	read(Archivo),
+	write('\nLista de palabras rechazadas? '),
+	read(Rechazadas),
 	open(Archivo,read,Str),
 	read(Str,List),
 	close(Str),
