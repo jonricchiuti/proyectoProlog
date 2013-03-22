@@ -1,13 +1,27 @@
 :- use_module(library(clpfd)).
 
-cargarListaPalabra(Alfabeto,Archivo) :-
-	open(Archivo,read,Str),
-	read(Str,List),
-	close(Str),
-	verificar(List,Alfabeto),
+main :-
+	write('Tamano? '),
+	read(Tam),
+	write('Alfabeto? '),
+	read(Alfabeto),
+	write('Archivo de palabras aceptadas? '),
+	read(Aceptadas),
+	write('Archivo de palabras rechazadas? '),
+	read(Rechazadas),
+	cargarListaPalabra(Aceptadas,Lista),
+	cargarListaPalabra(Rechazadas,ListaR),
+	verificar(Lista,Alfabeto),
+	verificar(ListaR,Alfabeto),
 	generarHechos(Alfabeto),
-	palabrasAceptadas(List,Aceptadas),
-	hola(Tablero,4,Aceptadas).
+	palabrasAceptadas(Lista,Acept),
+	palabrasAceptadas(ListaR,Recha),
+	hola(Tablero,Tam,Acept,Recha).
+
+cargarListaPalabra(Archivo,Lista) :-
+	open(Archivo,read,Str),
+	read(Str,Lista),
+	close(Str).
 
 palabrasAceptadas([],[]).
 
@@ -46,12 +60,15 @@ crearTablero([H|T],X) :-
 
 alguna(Lista,Palabras) :-
 	epa(Lista,Palabras);
-	verticales(Lista,Palabras).
+	verticales(Lista,Palabras);
+	diagonalesUBLR(Lista,Palabras);
+	diagonalesBURL(Lista,Palabras).
 
-hola(Lista,X,Aceptadas) :-
+hola(Lista,X,Aceptadas,Rechazadas) :-
 	length(Lista,X),
 	crearTablero(Lista,X),
-	alguna(Lista,Aceptadas),
+	negarPalabras(Lista,Rechazadas),
+	verificarPalabras(Lista,Aceptadas),
 	mostrarSopa(Lista).
 
 holis([H|T],Palabra,Arbalap) :-
@@ -59,25 +76,48 @@ holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Palabra);
 	holis(T,Palabra,Arbalap).
 
-epa(_,[]).
+%-----------------------------------
+vertical(Tablero,Palabra) :-
+	reverse(Palabra,Arbalap),
+	transpose(Tablero,X),
+	holis(X,Palabra,Arbalap).
 
-epa(Lista,[H|T]) :-
-	reverse([H|T],X),
-	holis(Lista,H,X),
-	epa(Lista,T).
+horizontal(Tablero,Palabra) :-
+	reverse(Palabra,Arbalap),
+	holis(Tablero,Palabra,Arbalap).
+
+diagonalUBLR(Tablero,Palabra) :-
+	reverse(Palabra,Arbalap),
+	listaDiag(Tablero,Diags),
+	holis(Diags,Palabra,Arbalap).
 	
-verticales(Lista,Palabras) :-
-	transpose(Lista,X),
-	epa(X,Palabras).
+diagonalBURL(Tablero,Palabra) :-
+	reverse(Palabra,Arbalap),
+	reverse(Tablero,X),
+	listaDiag(X,Diags),
+	holis(Diags,Palabra,Arbalap).
 
+verificarPalabras(_,[]).
 
-diagonales(Tam,_,Tam,_,_,[]). 
+verificarPalabras(Tablero,[H|T]) :-
+	(horizontal(Tablero,H);
+	vertical(Tablero,H);
+	diagonalUBLR(Tablero,H);
+	diagonalBURL(Tablero,H)),
+	verificarPalabras(Tablero,T).
+	
+negarPalabras(Tablero,[H|T]) :-
+	not(verificarPalabras(Tablero,[H|T])).
 
-diagonales(I,Tam,Tam,N,Tablero,Diagonal) :-
+%-------------------------------------
+
+diagonal(Tam,_,Tam,_,_,[]). 
+
+diagonal(I,Tam,Tam,N,Tablero,Diagonal) :-
 	Y is I + 1,
-	diagonales(Y,0,Tam,N,Tablero,Diagonal).
+	diagonal(Y,0,Tam,N,Tablero,Diagonal).
 
-diagonales(I,J,Tam,N,Tablero,Diagonal) :-
+diagonal(I,J,Tam,N,Tablero,Diagonal) :-
 	Cantidad is Tam*2 - 1,
 	Numero is Cantidad - N,
 	Numero is J + I,
@@ -85,11 +125,11 @@ diagonales(I,J,Tam,N,Tablero,Diagonal) :-
 	nth0(J,Fila,Miembro),
 	Diagonal = [Miembro|T],
 	Y is J + 1,
-	diagonales(I,Y,Tam,N,Tablero,T).
+	diagonal(I,Y,Tam,N,Tablero,T).
 	 
-diagonales(I,J,Tam,N,Tablero,Diagonal) :-
+diagonal(I,J,Tam,N,Tablero,Diagonal) :-
 	Y is J + 1,
-	diagonales(I,Y,Tam,N,Tablero,Diagonal).
+	diagonal(I,Y,Tam,N,Tablero,Diagonal).
 
 listaDiag(Tablero,Lista) :-
 	length(Tablero,X),
@@ -102,9 +142,19 @@ extraerDiag(_,_,0,_).
 
 extraerDiag(Tablero,[H|T],N,Tam) :-
 	N > 0,
-	diagonales(0,0,Tam,N,Tablero,H),
+	diagonal(0,0,Tam,N,Tablero,H),
 	N1 is N - 1,
 	extraerDiag(Tablero,T,N1,Tam).
+
+diagonalesUBLR(Tablero,[H|T]) :-
+	reverse(H,X),
+	listaDiag(Tablero,Diags),
+	holis(Diags,H,X);
+	diagonalesUBLR(Tablero,T).
+
+diagonalesBURL(Tablero,List) :-
+	reverse(Tablero,X),
+	diagonalesUBLR(X,List).
 
 rellenarColumna([]).
 
