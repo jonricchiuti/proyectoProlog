@@ -16,7 +16,7 @@ main :-
 	generarHechos(Alfabeto),
 	palabrasAceptadas(Lista,Acept),
 	palabrasAceptadas(ListaR,Recha),
-	hola(Tablero,Tam,Acept,Recha).
+	sopaLetra(Tablero,Tam,Acept,Recha).
 
 cargarListaPalabra(Archivo,Lista) :-
 	open(Archivo,read,Str),
@@ -64,12 +64,23 @@ alguna(Lista,Palabras) :-
 	diagonalesUBLR(Lista,Palabras);
 	diagonalesBURL(Lista,Palabras).
 
-hola(Lista,X,Aceptadas,Rechazadas) :-
+
+continuar(mas) :-
+	fail.
+
+continuar(X) :-
+	write('Hasta luego!'),
+	halt.	
+
+sopaLetra(Lista,X,Aceptadas,Rechazadas) :-
 	length(Lista,X),
 	crearTablero(Lista,X),
 	negarPalabras(Lista,Rechazadas),
 	verificarPalabras(Lista,Aceptadas),
-	mostrarSopa(Lista).
+	mostrarSopa(Lista),
+	write('Quieres mas? '),
+	read(X),
+	continuar(X).
 
 holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
