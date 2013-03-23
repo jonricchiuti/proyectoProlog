@@ -126,6 +126,12 @@ negarPalabras(Tablero,[H|T]) :-
 
 %-------------------------------------
 
+%diagonal(?I,?J,+N,+Tablero,-Diagonal) : 
+%Los indices I y J son utilizados para representar el movimiento entre 
+%las filas y las columnas en Tablero. Tablero es una
+%lista de listas y Diagonal se retornan las diagonales que contiene 
+%Tablero segun el numero N dado.
+
 diagonal(Tam,_,Tam,_,_,[]). 
 
 diagonal(I,Tam,Tam,N,Tablero,Diagonal) :-
@@ -146,12 +152,20 @@ diagonal(I,J,Tam,N,Tablero,Diagonal) :-
 	Y is J + 1,
 	diagonal(I,Y,Tam,N,Tablero,Diagonal).
 
+%listaDia(+Tablero,-Lista) : Tablero es una lista de listas y Lista
+%es una lista que contiene todas las diagonales que posee tablero.
+
 listaDiag(Tablero,Lista) :-
 	length(Tablero,X),
 	N is X*2-1,
 	length(Lista,N),
 	extraerDiag(Tablero,Lista,N,X),
 	!.
+
+
+%extraerDiag(+Tablero,-Lista,?N,+Tam) : Tablero es una lista de listas de tamno Tam x Tam.
+%Lista es el valor de retorno del predicado y contiene todas las diagonales
+%de Tablero correspondientes a al indice N.
 
 extraerDiag(_,_,0,_).
 
@@ -160,16 +174,6 @@ extraerDiag(Tablero,[H|T],N,Tam) :-
 	diagonal(0,0,Tam,N,Tablero,H),
 	N1 is N - 1,
 	extraerDiag(Tablero,T,N1,Tam).
-
-diagonalesUBLR(Tablero,[H|T]) :-
-	reverse(H,X),
-	listaDiag(Tablero,Diags),
-	holis(Diags,H,X);
-	diagonalesUBLR(Tablero,T).
-
-diagonalesBURL(Tablero,List) :-
-	reverse(Tablero,X),
-	diagonalesUBLR(X,List).
 
 rellenarColumna([]).
 
