@@ -190,7 +190,7 @@ mostrarLista([H|T]) :-
 	write(' '),
 	mostrarLista(T).
 
-%mostrarSopa(Tablero) 
+%mostrarSopa(+Tablero) : El Tablero se imprime en pantalla 
 mostrarSopa([]).
 
 mostrarSopa([H|T]) :-
@@ -198,13 +198,15 @@ mostrarSopa([H|T]) :-
 	write('\n'),
 	mostrarSopa(T).
 	
-
+%ver_horizontal(+Conjunto,+Subcconjunto) : Subconjunto esta contenido en Conjunto.
 ver_horizontal([],[]).
 ver_horizontal([X|Conjunto_tail], [X|Sub_tail]) :-
 	ver_horizontal_esp(Conjunto_tail,Sub_tail).
 ver_horizontal([_|Conjunto_tail], Sub) :-
 	ver_horizontal(Conjunto_tail,Sub).
 
+%ver_horizontal(+Conjunto,+Subcconjunto) : Subconjunto esta contenido en Conjunto.
+%Este predicado se utiliza cuando la verificacion ver_horizontal logra un exito.
 ver_horizontal_esp(_,[]).
 ver_horizontal_esp([X|Conjunto_tail], [X|Sub_tail]) :-
 	ver_horizontal_esp(Conjunto_tail,Sub_tail).
