@@ -1,5 +1,7 @@
 :- use_module(library(clpfd)).
 
+parar(no).
+
 main :-
 	write('Tamano? '),
 	read(Tam),
@@ -16,7 +18,12 @@ main :-
 	generarHechos(Alfabeto),
 	palabrasAceptadas(Lista,Acept),
 	palabrasAceptadas(ListaR,Recha),
-	sopaLetra(Tablero,Tam,Acept,Recha).
+	sopaLetra(Tablero,Tam,Acept,Recha,Respuesta),
+	parar(Respuesta),!,
+	fail.
+
+sopaLetra :- 
+	write('Gracias!').
 
 cargarListaPalabra(Archivo,Lista) :-
 	open(Archivo,read,Str),
@@ -58,12 +65,15 @@ crearTablero([H|T],X) :-
 	crearColumna(X,H),
 	crearTablero(T,X).
 
-sopaLetra(Lista,X,Aceptadas,Rechazadas) :-
+
+sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	length(Lista,X),
 	crearTablero(Lista,X),
 	negarPalabras(Lista,Rechazadas),
 	verificarPalabras(Lista,Aceptadas),
-	mostrarSopa(Lista).
+	mostrarSopa(Lista),
+	write('\nQuieres mas? '),
+	read(Respuesta).
 
 holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
