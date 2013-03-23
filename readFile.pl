@@ -5,7 +5,7 @@ parar(no) :-
 	nl,
 	halt.
 
-main :-
+generadorSopa :-
 	write('Tamano? '),
 	read(Tam),
 	write('Alfabeto? '),
@@ -31,6 +31,9 @@ cargarListaPalabra(Archivo,Lista) :-
 	read(Str,Lista),
 	close(Str).
 
+%palabrasAceptadas(+Palabras,-ListaPalabras) : Palabras es una lista de
+%strings que sera procesada y en ListaPalabras devuelve una lista que 
+%contiene una lista de los caracteres que formaban los strings.
 
 palabrasAceptadas([],[]).
 
@@ -45,6 +48,9 @@ generarHechos([H|T]) :-
 	assert(letra(H)),
 	generarHechos(T).
 
+%verificar(+Palabras,+Alfabeto) : Verifica que las palabras contenidas
+%en Palabras puedan ser generadas a partir de las letras contenidas en
+%Alfabeto.
 
 verificar([],_).
 
@@ -85,33 +91,38 @@ sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	mostrarSopa(Lista),
 	write('\nQuieres mas? '),
 	read(Respuesta).
-%
-holis([H|T],Palabra,Arbalap) :-
+
+%busqueda_horizonta(+Fila,+Palabra,+Arbalap) : Fila contiene a Palabra o contiene a Arbalap 
+busqueda_horizontal([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
 	ver_horizontal(H,Palabra);
-	holis(T,Palabra,Arbalap).
+	busqueda_horizontal(T,Palabra,Arbalap).
 
-
+%vertical(+Tablero,+Palabra) : Tablero contiene verticalmente a Palabra
 vertical(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	transpose(Tablero,X),
-	holis(X,Palabra,Arbalap).
+	busqueda_horizontal(X,Palabra,Arbalap).
 
+%horizontal(+Tablero,+Palabra) : Tablero contiene en horizontal y en reverso a Palabra
 horizontal(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
-	holis(Tablero,Palabra,Arbalap).
+	busqueda_horizontal(Tablero,Palabra,Arbalap).
 
+%diagonalUBLR(+Tablero,+Palabra) : Tablero contiene diagonalmente a Palabra
 diagonalUBLR(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	listaDiag(Tablero,Diags),
-	holis(Diags,Palabra,Arbalap).
+	busqueda_horizontal(Diags,Palabra,Arbalap).
 	
+%diagonalBURL(+Tablero,+Palabra) : Tablero contiene diagonalmente a Palabra
 diagonalBURL(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	reverse(Tablero,X),
 	listaDiag(X,Diags),
-	holis(Diags,Palabra,Arbalap).
+	busqueda_horizontal(Diags,Palabra,Arbalap).
 
+%verificarPalabras(+Tablero,+Lista) : Tablero contiene al primer elemento de Lista en alguna direccion
 verificarPalabras(_,[]).
 
 verificarPalabras(Tablero,[H|T]) :-
@@ -120,11 +131,11 @@ verificarPalabras(Tablero,[H|T]) :-
 	diagonalUBLR(Tablero,H);
 	diagonalBURL(Tablero,H)),
 	verificarPalabras(Tablero,T).
-	
+
+%negarPalabras(+Tablero,+Lista) : Tablero no contiene al primer elemento de Lista en ninguna direccion
 negarPalabras(Tablero,[H|T]) :-
 	not(verificarPalabras(Tablero,[H|T])).
 
-%-------------------------------------
 
 %diagonal(?I,?J,+N,+Tablero,-Diagonal) : 
 %Los indices I y J son utilizados para representar el movimiento entre 
@@ -181,6 +192,7 @@ rellenarColumna([H|T]) :-
 	letra(H),
 	rellenarColumna(T).
 
+%mostrarLista(+Lista) : Lista se imprime en pantalla
 mostrarLista([]).
 
 mostrarLista([H|T]) :-
@@ -188,6 +200,7 @@ mostrarLista([H|T]) :-
 	write(' '),
 	mostrarLista(T).
 
+%mostrarSopa(Tablero) 
 mostrarSopa([]).
 
 mostrarSopa([H|T]) :-
