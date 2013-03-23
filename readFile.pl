@@ -73,11 +73,6 @@ crearTablero([H|T],X) :-
 	crearColumna(X,H),
 	crearTablero(T,X).
 
-alguna(Lista,Palabras) :-
-	epa(Lista,Palabras);
-	verticales(Lista,Palabras);
-	diagonalesUBLR(Lista,Palabras);
-	diagonalesBURL(Lista,Palabras).
 
 sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	length(Lista,X),
@@ -87,7 +82,6 @@ sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	mostrarSopa(Lista),
 	write('\nQuieres mas? '),
 	read(Respuesta).
-
 
 holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
