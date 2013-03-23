@@ -58,29 +58,12 @@ crearTablero([H|T],X) :-
 	crearColumna(X,H),
 	crearTablero(T,X).
 
-alguna(Lista,Palabras) :-
-	epa(Lista,Palabras);
-	verticales(Lista,Palabras);
-	diagonalesUBLR(Lista,Palabras);
-	diagonalesBURL(Lista,Palabras).
-
-
-continuar(mas) :-
-	fail.
-
-continuar(X) :-
-	write('Hasta luego!'),
-	halt.	
-
 sopaLetra(Lista,X,Aceptadas,Rechazadas) :-
 	length(Lista,X),
 	crearTablero(Lista,X),
 	negarPalabras(Lista,Rechazadas),
 	verificarPalabras(Lista,Aceptadas),
-	mostrarSopa(Lista),
-	write('Quieres mas? '),
-	read(X),
-	continuar(X).
+	mostrarSopa(Lista).
 
 holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
