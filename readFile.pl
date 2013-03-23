@@ -85,33 +85,38 @@ sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	mostrarSopa(Lista),
 	write('\nQuieres mas? '),
 	read(Respuesta).
-%
-holis([H|T],Palabra,Arbalap) :-
+
+%busqueda_horizonta(+Fila,+Palabra,+Arbalap) : Fila contiene a Palabra o contiene a Arbalap 
+busqueda_horizontal([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
 	ver_horizontal(H,Palabra);
-	holis(T,Palabra,Arbalap).
+	busqueda_horizontal(T,Palabra,Arbalap).
 
-
+%vertical(+Tablero,+Palabra) : Tablero contiene verticalmente a Palabra
 vertical(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	transpose(Tablero,X),
-	holis(X,Palabra,Arbalap).
+	busqueda_horizontal(X,Palabra,Arbalap).
 
+%horizontal(+Tablero,+Palabra) : Tablero contiene en horizontal y en reverso a Palabra
 horizontal(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
-	holis(Tablero,Palabra,Arbalap).
+	busqueda_horizontal(Tablero,Palabra,Arbalap).
 
+%diagonalUBLR(+Tablero,+Palabra) : Tablero contiene diagonalmente a Palabra
 diagonalUBLR(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	listaDiag(Tablero,Diags),
-	holis(Diags,Palabra,Arbalap).
+	busqueda_horizontal(Diags,Palabra,Arbalap).
 	
+%diagonalBURL(+Tablero,+Palabra) : Tablero contiene diagonalmente a Palabra
 diagonalBURL(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	reverse(Tablero,X),
 	listaDiag(X,Diags),
-	holis(Diags,Palabra,Arbalap).
+	busqueda_horizontal(Diags,Palabra,Arbalap).
 
+%verificarPalabras(+Tablero,+Lista) : Tablero contiene al primer elemento de Lista en alguna direccion
 verificarPalabras(_,[]).
 
 verificarPalabras(Tablero,[H|T]) :-
@@ -120,11 +125,10 @@ verificarPalabras(Tablero,[H|T]) :-
 	diagonalUBLR(Tablero,H);
 	diagonalBURL(Tablero,H)),
 	verificarPalabras(Tablero,T).
-	
+
+%negarPalabras(+Tablero,+Lista) : Tablero no contiene al primer elemento de Lista en ninguna direccion
 negarPalabras(Tablero,[H|T]) :-
 	not(verificarPalabras(Tablero,[H|T])).
-
-%-------------------------------------
 
 diagonal(Tam,_,Tam,_,_,[]). 
 
@@ -164,19 +168,21 @@ extraerDiag(Tablero,[H|T],N,Tam) :-
 diagonalesUBLR(Tablero,[H|T]) :-
 	reverse(H,X),
 	listaDiag(Tablero,Diags),
-	holis(Diags,H,X);
+	busqueda_horizontal(Diags,H,X);
 	diagonalesUBLR(Tablero,T).
 
 diagonalesBURL(Tablero,List) :-
 	reverse(Tablero,X),
 	diagonalesUBLR(X,List).
 
+%rellenarColumna(+Lista) : Lista contiene letras
 rellenarColumna([]).
 
 rellenarColumna([H|T]) :-
 	letra(H),
 	rellenarColumna(T).
 
+%mostrarLista(+Lista) : Lista se imprime en pantalla
 mostrarLista([]).
 
 mostrarLista([H|T]) :-
@@ -184,6 +190,7 @@ mostrarLista([H|T]) :-
 	write(' '),
 	mostrarLista(T).
 
+%mostrarSopa(Tablero) 
 mostrarSopa([]).
 
 mostrarSopa([H|T]) :-
