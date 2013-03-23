@@ -1,6 +1,9 @@
 :- use_module(library(clpfd)).
 
-parar(no).
+parar(no) :- 
+	write('Gracias!'),
+	nl,
+	halt.
 
 main :-
 	write('Tamano? '),
@@ -22,13 +25,12 @@ main :-
 	parar(Respuesta),!,
 	fail.
 
-sopaLetra :- 
-	write('Gracias!').
-
+%cargarListaPalabra(+Archivo,-Lista) : Archivo contiene a Lista
 cargarListaPalabra(Archivo,Lista) :-
 	open(Archivo,read,Str),
 	read(Str,Lista),
 	close(Str).
+
 
 palabrasAceptadas([],[]).
 
@@ -36,11 +38,13 @@ palabrasAceptadas([H|T],[H_|T_]) :-
 	atom_chars(H,H_),
 	palabrasAceptadas(T,T_).
 
+%generarHechos(+Lista) : El primer elemento de Lista es un hecho
 generarHechos([]).
 
 generarHechos([H|T]) :-
 	assert(letra(H)),
 	generarHechos(T).
+
 
 verificar([],_).
 
@@ -49,16 +53,20 @@ verificar([H|T],List) :-
 	puedeFormarse(X,List),
 	verificar(T,List).
 
+%puedeFormarse(?Letras_palabra,?Alfabeto) : El primer elemento de Letras_palabra 
+%esta contenido en Alfabeto
 puedeFormarse([],_).
 
 puedeFormarse([H|T],List) :-
 	member(H,List),
 	puedeFormarse(T,List).
 
+%crearColumna(?X,?Tablero): Tablero tiene X columnas rellenadas con listas.
 crearColumna(X,Tablero) :- 
 	length(Tablero,X),
 	rellenarColumna(Tablero).
 
+%crearTablero
 crearTablero([],_).
 
 crearTablero([H|T],X) :- 
@@ -86,7 +94,7 @@ holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Palabra);
 	holis(T,Palabra,Arbalap).
 
-%-----------------------------------
+
 vertical(Tablero,Palabra) :-
 	reverse(Palabra,Arbalap),
 	transpose(Tablero,X),
