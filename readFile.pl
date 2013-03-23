@@ -1,5 +1,7 @@
 :- use_module(library(clpfd)).
 
+parar(no).
+
 main :-
 	write('Tamano? '),
 	read(Tam),
@@ -11,12 +13,17 @@ main :-
 	read(Rechazadas),
 	cargarListaPalabra(Aceptadas,Lista),
 	cargarListaPalabra(Rechazadas,ListaR),
-	verificar(Lista,Alfabeto),
-	verificar(ListaR,Alfabeto),
+	%% verificar(Lista,Alfabeto),
+	%% verificar(ListaR,Alfabeto),
 	generarHechos(Alfabeto),
 	palabrasAceptadas(Lista,Acept),
-	palabrasAceptadas(ListaR,Recha),
-	hola(Tablero,Tam,Acept,Recha).
+%	palabrasAceptadas(ListaR,Recha),
+	hola(Tablero,Tam,Acept,Recha,Respuesta),
+	parar(Respuesta),!,
+	fail.
+
+main :- 
+	write('Gracias!').
 
 cargarListaPalabra(Archivo,Lista) :-
 	open(Archivo,read,Str),
@@ -64,12 +71,14 @@ alguna(Lista,Palabras) :-
 	diagonalesUBLR(Lista,Palabras);
 	diagonalesBURL(Lista,Palabras).
 
-hola(Lista,X,Aceptadas,Rechazadas) :-
+hola(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	length(Lista,X),
 	crearTablero(Lista,X),
-	negarPalabras(Lista,Rechazadas),
-	verificarPalabras(Lista,Aceptadas),
-	mostrarSopa(Lista).
+%	negarPalabras(Lista,Rechazadas),
+%	verificarPalabras(Lista,Aceptadas),
+	mostrarSopa(Lista),
+	write('\nQuieres mas? '),
+	read(Respuesta).
 
 holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
