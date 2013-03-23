@@ -53,7 +53,7 @@ verificar([H|T],List) :-
 	puedeFormarse(X,List),
 	verificar(T,List).
 
-%puedeFormarse(?Letras_palabra,?Alfabeto) : El primer elemento de Letras_palabra 
+%puedeFormarse(+Letras_palabra,+Alfabeto) : El primer elemento de Letras_palabra 
 %esta contenido en Alfabeto
 puedeFormarse([],_).
 
@@ -61,19 +61,22 @@ puedeFormarse([H|T],List) :-
 	member(H,List),
 	puedeFormarse(T,List).
 
-%crearColumna(?X,?Tablero): Tablero tiene X columnas rellenadas con listas.
+%crearColumna(+X,-Tablero): Tablero tiene X columnas rellenadas con listas.
 crearColumna(X,Tablero) :- 
 	length(Tablero,X),
 	rellenarColumna(Tablero).
 
-%crearTablero
+%crearTablero(-Tablero,+Tam) : Tablero contiene una lista de listas de Tam x Tam
 crearTablero([],_).
 
 crearTablero([H|T],X) :- 
 	crearColumna(X,H),
 	crearTablero(T,X).
 
-
+%sopaLetra(+Tablero,+Tam,+Aceptadas,+Rechazadas,-Respuesta) : 
+%La sopa de letras de Tablero tiene dimension Tam x Tam , contiene las palabras
+%Aceeptadas y no contiene las palabras Rechazadas. Respuesta contiene la respuesta
+%del usuario.
 sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	length(Lista,X),
 	crearTablero(Lista,X),
@@ -82,7 +85,7 @@ sopaLetra(Lista,X,Aceptadas,Rechazadas,Respuesta) :-
 	mostrarSopa(Lista),
 	write('\nQuieres mas? '),
 	read(Respuesta).
-
+%
 holis([H|T],Palabra,Arbalap) :-
 	ver_horizontal(H,Arbalap);
 	ver_horizontal(H,Palabra);
